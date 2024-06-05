@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  bot:
+    container_name: my_tasks.bot
+    build:
+      context: .
+    restart: unless-stopped
+    command: "python -m bot"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - my_tasks.postgres.network
+      - my_tasks.redis.network
+    env_file:
+      - .env
+    volumes:
+      - .:/app:rw
+
+  migrations:
+    container_name: my_tasks.migrations
+    build:
+      context: .
+    restart: on-failure
+    command: "python -m migrations"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - my_tasks.postgres.network
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+
+  database:
+      container_name: my_tasks.database
+      hostname: my_tasks.database
+      image: postgres:16-alpine
+      restart: unless-stopped
+      environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        PGDATA: ${POSTGRES_PGDATA}
+      ports:
+        - "${POSTGRES_PORT}:5432"
+      volumes:
+        - my_tasks.postgres.data:${POSTGRES_PGDATA}:rw
+      networks:
+        - my_tasks.postgres.network
+      env_file:
+        - .env
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+        interval: 10s
+        timeout: 60s
+        retries: 5
+        start_period: 10s
+
+  redis:
+    image: redis:7.0.4-alpine
+    container_name: my_tasks.redis
+    hostname: redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    networks:
+      - my_tasks.redis.network
+
+volumes:
+  my_tasks.postgres.data: { }
+
+networks:
+  my_tasks.postgres.network: { }
+  my_tasks.redis.network: { }
