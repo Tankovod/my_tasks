@@ -1,7 +1,7 @@
 from redis import Redis
 
 
-redis_fsm = Redis(
+redis = Redis(
     host="redis",
     port=6379,
     db=5,

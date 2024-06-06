@@ -2,7 +2,7 @@ from sqlalchemy import delete, update
 from sqlalchemy import select
 
 from src.database.base import Base
-from .abstract import AbstractRepository
+from src.repos.abstract import AbstractRepository
 
 
 class SQLAlchemyRepository(AbstractRepository):

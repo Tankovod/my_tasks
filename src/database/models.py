@@ -24,6 +24,9 @@ class User(Base):
 
     tasks = relationship(argument="Task", back_populates="user")
 
+    def __repr__(self) -> str:
+        return f"<User id:{self.id} nick:{self.nickname} name:{self.name}>"
+
 
 class Task(Base):
     __tablename__ = "task"
@@ -33,9 +36,13 @@ class Task(Base):
     name: Mapped[str] = mapped_column(String(64), nullable=False, unique=False)
     description: Mapped[str] = mapped_column(String(1024), nullable=False, unique=False)
     created: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    finished: Mapped[bool] = mapped_column(default=False, nullable=False, unique=False)
 
     user_id: Mapped[int] = mapped_column(
         ForeignKey(column="users.id"), nullable=False, unique=False
     )
 
     user = relationship(argument="User", back_populates="tasks")
+
+    def __repr__(self) -> str:
+        return f"<Task id:{self.id} name:{self.name}>"

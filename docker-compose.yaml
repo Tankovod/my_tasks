@@ -32,7 +32,25 @@ services:
     env_file:
       - .env
     volumes:
-      - ./src:/app/src
+      - ./src/database:/app/src/database:rw
+
+  admin:
+    container_name: my_tasks.admin
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "8050:8050"
+    command: "python -m admin"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - my_tasks.postgres.network
+    env_file:
+      - .env
+    volumes:
+      - .:/app:rw
 
   database:
       container_name: my_tasks.database
@@ -57,7 +75,7 @@ services:
         interval: 10s
         timeout: 60s
         retries: 5
-        start_period: 10s
+        start_period: 5s
 
   redis:
     image: redis:7.0.4-alpine
