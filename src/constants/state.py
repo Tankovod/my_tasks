@@ -1,5 +1,7 @@
 
 class State:
+    """States for Telegram bot FSM"""
+
     ENTER_NAME = "enter_name"
     ENTER_NICKNAME = "enter_nickname"
 

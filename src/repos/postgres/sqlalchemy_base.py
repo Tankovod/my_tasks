@@ -17,12 +17,14 @@ class SQLAlchemyRepository(AbstractRepository):
     @classmethod
     async def update(cls, pk, **kwargs):
         async with cls.session() as session:
-            await session.execute(update(cls.model).filter_by(id=pk).values(**kwargs))
+            task = await session.execute(update(cls.model).filter_by(id=pk).values(**kwargs).returning("*"))
+            return task.fetchone()
 
     @classmethod
     async def delete(cls, pk):
         async with cls.session() as session:
             await session.execute(delete(cls.model).filter_by(id=pk))
+            await session.commit()
 
     @classmethod
     async def list(cls, limit: int = 100, offset: int = 0):

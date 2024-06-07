@@ -9,6 +9,7 @@ class TaskRepository(SQLAlchemyRepository):
 
     @classmethod
     async def get_related_tasks(cls, user_id: int, orders_: dict):
+        """Get user's related sorted tasks from db"""
         stmt = select(cls.model).filter_by(user_id=user_id)
 
         for order in orders_.items():
@@ -24,4 +25,11 @@ class TaskRepository(SQLAlchemyRepository):
         async with cls.model.session() as session:
             return await session.scalars(stmt)
 
+    @classmethod
+    async def save_task_object(cls, obj: Task):
+        async with cls.model.session() as session:
+            session.add(
+                obj
+            )
+            await session.commit()
 
