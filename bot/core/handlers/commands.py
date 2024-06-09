@@ -11,7 +11,6 @@ async def start(cl, message: Message) -> None:
 
     user_id = message.chat.id
     user_in_db = await UserRepository.get(pk=user_id)
-    print(await u.get_state(user_id))
 
     if not user_in_db:
         if await u.get_state(user_id) in (*register_states, Empty.UNSET.value):
