@@ -6,6 +6,8 @@ from pathlib import Path
 class Settings(BaseSettings):
     DATABASE_URL: PostgresDsn
     BOT_TOKEN: SecretStr
+    API_ID: int
+    API_HASH: SecretStr
 
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
