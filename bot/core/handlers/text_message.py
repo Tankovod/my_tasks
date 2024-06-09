@@ -5,6 +5,9 @@ from src.constants.state import State
 from src.repos.postgres.user import UserRepository
 from src.repos.postgres.task import TaskRepository
 from src.repos.redis.user import u
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 async def handle_user_input_text(cl, message: Message) -> None:
@@ -70,6 +73,7 @@ async def handle_user_input_text(cl, message: Message) -> None:
                 text="Поздравляем с регистрацией! Можете создать свой список задач!",
                 reply_markup=main_menu_rk
             )
+            logger.info(f"User {user_id} registered")
 
         except IntegrityError:
             await message.reply_text("Пользователь с таким никнеймом уже существует! Введите другой:")

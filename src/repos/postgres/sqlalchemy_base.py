@@ -27,9 +27,14 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.commit()
 
     @classmethod
-    async def list(cls, limit: int = 100, offset: int = 0):
+    async def list(cls, limit: int = None, offset: int = None):
         async with cls.session() as session:
-            return await session.scalars(select(cls.model).limit(limit).offset(offset))
+            stmt = select(cls.model)
+            if limit:
+                stmt = stmt.limit(limit)
+            if offset:
+                stmt = stmt.offset(offset)
+            return await session.scalars(stmt)
 
     @classmethod
     async def save(cls, **kwargs):

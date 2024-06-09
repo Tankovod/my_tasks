@@ -5,6 +5,12 @@ from bot.core.handlers.tasks import handle_task_creation, show_current_tasks, ha
 from bot.core.filters.tasks import tasks_filter_to_show, tasks_filter_change_state, tasks_filter_list, tasks_filter_delete
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
 from pyrogram.filters import regex, text, command
+from src.utils.bot_startup import users_on_startup
+from src.utils.async_start import async_start
+from logging import getLogger, basicConfig, INFO
+
+basicConfig(level=INFO)
+logger = getLogger(__name__)
 
 
 task_delete = CallbackQueryHandler(handle_delete_task, tasks_filter_delete)
@@ -22,8 +28,13 @@ bot.add_handler(task_delete, group=0)
 bot.add_handler(show_task_list, group=0)
 bot.add_handler(listing_current_tasks, group=0)
 bot.add_handler(start_creating_task, group=0)
-bot.add_handler(processing_input_text, group=0)
 bot.add_handler(start_command, group=0)
+bot.add_handler(processing_input_text, group=0)
 
 if __name__ == "__main__":
+    async_start(
+        users_on_startup
+    )
+    logger.info("On_startup completed")
+    logger.info("Bot starting...")
     bot.run()

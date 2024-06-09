@@ -4,6 +4,7 @@ from sqladmin import ModelView
 
 class UserAdmin(ModelView, model=User):
     """User admin model view"""
+
     name = "Пользователь"
     name_plural = "Пользователи"
     icon = "fa-solid fa-user"
@@ -29,6 +30,7 @@ class UserAdmin(ModelView, model=User):
 
 class TaskAdmin(ModelView, model=Task):
     """Task admin model view"""
+
     name = "Задача"
     name_plural = "Задачи"
     icon = "fa-solid fa-tasks"
